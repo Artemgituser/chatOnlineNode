@@ -132,8 +132,8 @@ L'application est accessible sur **http://localhost:3000**
 
 ```bash
 # Sur le serveur
-git clone <repo-url> /var/www/chatapp
-cd /var/www/chatapp
+git clone <repo-url> /home/artem/chatOnlineNode
+cd /home/artem/chatOnlineNode
 npm install --omit=dev
 
 # Configurer .env en mode production
