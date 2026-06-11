@@ -1,0 +1,146 @@
+<div class="chat-app">
+
+  <!-- =============== SIDEBAR =============== -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">💬</div>
+        <span class="sidebar-brand-name">ChatApp</span>
+      </div>
+    </div>
+
+    <p class="sidebar-section-title">Salons</p>
+
+    <nav class="room-list" id="roomList" role="navigation" aria-label="Liste des salons">
+      {{#each rooms}}
+      <button
+        class="room-item"
+        data-room-id="{{id}}"
+        data-room-name="{{name}}"
+        data-room-icon="{{icon}}"
+        id="room-{{id}}"
+        aria-label="Rejoindre le salon {{name}}"
+      >
+        <span class="room-emoji">{{icon}}</span>
+        <span class="room-name"># {{name}}</span>
+      </button>
+      {{/each}}
+    </nav>
+
+    <!-- User info + logout -->
+    <div class="sidebar-footer">
+      <div class="user-avatar" title="{{user.username}}">{{substr user.username 0 1}}</div>
+      <div class="user-info">
+        <div class="user-name">{{user.username}}</div>
+        <div class="user-status">
+          <span class="status-dot"></span>
+          <span>En ligne</span>
+        </div>
+      </div>
+      <form action="/logout" method="POST" style="margin:0;">
+        <button type="submit" class="logout-btn" title="Se déconnecter" aria-label="Se déconnecter">
+          ⎋
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- =============== MAIN CHAT =============== -->
+  <main class="chat-main" id="chatMain">
+
+    <!-- Empty state (before selecting a room) -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-state-icon">💬</div>
+      <p class="empty-state-title">Choisissez un salon</p>
+      <p class="empty-state-desc">Sélectionnez un salon dans la liste à gauche pour commencer à discuter.</p>
+    </div>
+
+    <!-- Chat interface (hidden until room selected) -->
+    <div id="chatInterface" style="display:none; flex-direction:column; height:100%;">
+
+      <!-- Header -->
+      <header class="chat-header" id="chatHeader">
+        <div class="chat-header-icon" id="chatHeaderIcon">💬</div>
+        <div class="chat-header-info">
+          <div class="chat-header-name" id="chatHeaderName">—</div>
+          <div class="chat-header-members" id="chatHeaderDesc">Salon de discussion</div>
+        </div>
+      </header>
+
+      <!-- Messages -->
+      <div class="messages-container" id="messagesContainer" role="log" aria-live="polite" aria-label="Messages">
+        <div class="load-more-sentinel" id="loadMoreSentinel"></div>
+        <div class="load-more-spinner" id="loadMoreSpinner" style="display:none;">
+          <span>⏳</span> Chargement...
+        </div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="typing-indicator" id="typingIndicator">
+        <div class="typing-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <span id="typingText"></span>
+      </div>
+
+      <!-- Input bar -->
+      <div class="input-bar">
+        <!-- Paste preview -->
+        <div class="paste-preview" id="pastePreview">
+          <img id="pastePreviewImg" src="" alt="Image à envoyer" />
+          <div class="paste-preview-info">
+            <div class="paste-preview-name" id="pastePreviewName">Image copiée</div>
+            <div>Prête à être envoyée</div>
+          </div>
+          <button class="paste-cancel" id="pasteCancelBtn" aria-label="Annuler">✕</button>
+        </div>
+
+        <div class="input-wrapper">
+          <textarea
+            class="chat-input"
+            id="chatInput"
+            placeholder="Message..."
+            rows="1"
+            maxlength="2000"
+            aria-label="Message"
+          ></textarea>
+
+          <div class="input-actions">
+            <!-- Emoji button -->
+            <button class="input-btn" id="emojiBtn" title="Emojis" aria-label="Ouvrir le sélecteur d'emojis">😊</button>
+            <!-- Send -->
+            <button class="send-btn" id="sendBtn" disabled title="Envoyer" aria-label="Envoyer le message">
+              ↑
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Emoji picker container -->
+<div class="emoji-picker-wrap" id="emojiPickerWrap" style="display:none;"></div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image en plein écran">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Fermer">✕</button>
+  <img id="lightboxImg" src="" alt="Image agrandie" />
+</div>
+
+<!-- Socket.io -->
+<script src="/socket.io/socket.io.js"></script>
+
+<!-- Emoji Picker (emoji-picker-element) -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+
+<!-- App JS -->
+<script>
+  // Pass server-side data to client
+  window.CHAT_CONFIG = {
+    userId: {{user.id}},
+    username: '{{user.username}}',
+  };
+</script>
+<script src="/js/chat.js"></script>
