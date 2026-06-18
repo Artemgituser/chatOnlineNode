@@ -14,6 +14,27 @@ services:
       - mysql_data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
 
+  app:
+    build: .
+    container_name: chatapp
+    restart: unless-stopped
+    ports:
+      - "5777:5777"
+    environment:
+      - PORT=5777
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=chatuser
+      - DB_PASS=chatpassword
+      - DB_NAME=chatdb
+      - JWT_SECRET=super_secret_jwt_key_change_in_production_please
+      - JWT_EXPIRES_IN=7d
+    depends_on:
+      - mysql
+    volumes:
+      - ./uploads:/usr/src/app/uploads
+
 volumes:
   mysql_data:
     driver: local
