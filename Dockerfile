@@ -1,5 +1,5 @@
-# Use official Node.js LTS version on Alpine Linux for a lightweight footprint
-FROM node:18-alpine
+# Use official Node.js LTS version on Debian Slim for stable DNS resolution and a lightweight footprint
+FROM node:18-slim
 
 # Create app directory
 WORKDIR /usr/src/app
