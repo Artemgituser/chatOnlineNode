@@ -8,8 +8,6 @@ services:
       MYSQL_DATABASE: chatdb
       MYSQL_USER: chatuser
       MYSQL_PASSWORD: chatpassword
-    ports:
-      - "3306:3306"
     networks:
       - chat-network
     volumes:
